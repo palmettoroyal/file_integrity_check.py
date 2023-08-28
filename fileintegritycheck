@@ -1,0 +1,29 @@
+import hashlib
+import os
+
+
+def calculate_sha256(file_path, block_size=65536):
+	sha256 = hashlib.sha256()
+	with open(file_path, 'rb') as f:
+		while True:
+			data = f.read(block_size)
+			if not data:
+				break
+			sha256.update(data)
+	return sha256.hexdigest()
+
+def verify_file_integrity(file_path, original_sha256):
+	calculated_sha256 = calculate_sha256(file_path)
+	return calculated_sha256 == original_sha256
+
+if __name__ == "__main__":
+	file_path = 'path_to_file.ext' #Change this
+	original_sha256 = 'original_sha256_hash' # Get original hash first then place here
+
+	if os.path.exist(file_path):
+		if verify_file_integrity(file_path, original_sha256):
+			print("File integrity verified")
+		else:
+			print("File integrity failed")
+	else:
+		print("File not found")
